@@ -1,8 +1,9 @@
 # Mule app to query MySQL database and write output data to Excel file using FTP Write connector and FileZilla Server
-
+![](https://docs.mulesoft.com/ftp-connector/1.5/_images/ftp-write-config.png)*Mulesoft FTP Write connector*
 This Mule application allows to easy interact with a MySQL database which to retrieve data about actors, their first name, last name and last update of their data, to later write it to a new local file.
 
 ### Previous MySQL configuration
+![](https://programmerclick.com/images/31/8fb5d15cf1ac4eb73c98e0733f6c6987.png)*Sakila MySQL database*
 - Use database `sakila` from *Samples and Examples* MySQL installer files.
 - Once open the connection of the database on *MySQL Workbench*, create a user to grant access for CRUD database operations.
     ```sql
