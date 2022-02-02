@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:ftp="http://www.mulesoft.org/schema/mule/ftp"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ftp http://www.mulesoft.org/schema/mule/ftp/current/mule-ftp.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="ca4ce7ec-bc72-449a-a96e-0000f5fea6b6" >
+		<db:my-sql-connection host="localhost" port="3306" user="test" password="newpassword" database="sakila" />
+	</db:config>
+	<ftp:config name="FTP_Config" doc:name="FTP Config" doc:id="38149880-bb8f-4cc9-9f8a-9d6e0b6b43d6" >
+		<ftp:connection host="localhost" username="ftp_test_user" password="ftp_test_user" workingDir="retrieved-data"/>
+	</ftp:config>
+	<flow name="file-write-exampleFlow" doc:id="98b10009-88ff-4344-ab88-fc7489c0dd87" >
+		<scheduler doc:name="Scheduler" doc:id="d8ddbef1-62a9-4d79-95be-96d07ca760ef" >
+			<scheduling-strategy >
+				<fixed-frequency frequency="1" timeUnit="MINUTES"/>
+			</scheduling-strategy>
+		</scheduler>
+		<db:select doc:id="b08d5543-fa6d-4f5a-8193-84f859faec7f" config-ref="Database_Config" doc:name="Select Actors">
+			<db:sql ><![CDATA[SELECT * FROM actor]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="79133dea-acde-4265-a5f9-45c4f2fb4279" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xlsx
+---
+{
+	actors: payload map ( payload01 , indexOfPayload01 ) -> {
+		id: payload01.actor_id,
+		firstName: payload01.first_name,
+		lastName: payload01.last_name,
+		lastUpdate: payload01.last_update 
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ftp:write doc:id="38149880-bb8f-4cc9-9f8a-9d6e0b6b43d6" config-ref="FTP_Config" path="actorsInfo.xlsx"/>
+	</flow>
+</mule>

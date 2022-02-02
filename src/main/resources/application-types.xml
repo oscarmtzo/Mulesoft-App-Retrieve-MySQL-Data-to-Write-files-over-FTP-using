@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="xlxs-actors-datatype" format="excel">
+      <types:shape format="weave"><![CDATA[%dw 2.0
+
+type xlxs_actors_datatype = {|
+  actors?: Array<{|    id: Number,     firstName: String,     lastName: String,     lastUpdate: String  |}>
+|}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#79133dea-acde-4265-a5f9-45c4f2fb4279"/>
+</types:mule>
